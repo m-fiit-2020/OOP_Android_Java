@@ -1,6 +1,7 @@
 package com.example.magistr;
 
 import android.content.res.AssetManager;
+import android.util.Log;
 
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
@@ -29,7 +30,7 @@ public class MapLoader {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
-		int[][] arr = new int[8][];
+		int[][] arr = new int[14][];
 		Scanner sc;
 		try {
 			sc = new Scanner(reader);
@@ -47,9 +48,9 @@ public class MapLoader {
 		} catch (Exception e) {
 			e.printStackTrace();
 		}finally {
-			
+
 		}
-		//print(arr);
+		print(arr);
 		return arr;
 	}
 
@@ -57,9 +58,9 @@ public class MapLoader {
 		for(int _i=0; _i<arr.length; _i++) {
 			int[] tArr = arr[_i];
 			for(int _j=0; _j<tArr.length; _j++) {
-				System.out.print(tArr[_j]+",");
+				Log.d("PrintMap: ", String.valueOf(tArr[_j])+",");
 			}
-			System.out.println();
+			Log.d("PrintMap: ", "");
 		}
 	}
 }

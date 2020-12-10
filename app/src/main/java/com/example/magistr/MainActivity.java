@@ -1,11 +1,10 @@
 package com.example.magistr;
 
-import androidx.appcompat.app.AppCompatActivity;
-
+import android.app.Activity;
 import android.content.res.AssetManager;
 import android.os.Bundle;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -13,13 +12,9 @@ public class MainActivity extends AppCompatActivity {
 
         AssetManager assetManager = this.getAssets();
         int[][] map = new MapLoader().load(assetManager,"map.txt");
-        //MapLoader.print(map);
 
         Draw2D draw2D = new Draw2D(this, map);
+
         this.setContentView(draw2D);
-
-        //setContentView(R.layout.activity_main);
-
-
     }
 }
