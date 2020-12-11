@@ -37,7 +37,7 @@ public class Hoplit extends Unit {
 		this.x = x;
 		this.y = y;
 		Field.map0[y][x]=-2;
-		
+		MapLoader.print(Field.map0);
 		ss = game.getSpriteSheet(4);
 		
 		for(int _i=0; _i<8; _i++) {

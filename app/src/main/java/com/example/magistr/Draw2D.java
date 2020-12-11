@@ -21,7 +21,7 @@ public class Draw2D extends View implements Runnable{
     Field field = null;
 
     SpriteSheetProvider spriteSheetProvider = new SpriteSheetProvider(this);
-    UnitCont unitCont = new UnitCont(this);
+    UnitCont unitCont;
 
     public Draw2D(Context context, int[][] map) {
         super(context);
@@ -30,7 +30,8 @@ public class Draw2D extends View implements Runnable{
         mBitmap = BitmapFactory.decodeResource(res, R.drawable.cat_bottom);
         unitBitmap = BitmapFactory.decodeResource(res, R.drawable.p0);
         field = new Field(map);
-        unitCont.refresh();
+        unitCont = new UnitCont(this);
+
         Thread t = new Thread(this);
         t.start();
     }

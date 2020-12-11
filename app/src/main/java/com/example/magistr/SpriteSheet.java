@@ -62,8 +62,14 @@ public class SpriteSheet {
 		Paint mPaint = new Paint();
 		mPaint.setColor(Color.RED);
 		if(selected) {
-			g.drawOval(px+4, py+4, px+4+Field.xSize-8, py+4+Field.ySize-8, mPaint);
+			mPaint.setColor(Color.RED);
+			mPaint.setStyle(Paint.Style.STROKE);
+			mPaint.setStrokeWidth(2);
+			//mPaint.setStyle(Paint.Style.);
+			g.drawCircle(px+Field.xSize/2, py+Field.ySize/2, (Field.xSize+Field.xSize-4)/4,mPaint);
 		}
-		g.drawBitmap(frame, px-(MAX_WIDTH-Field.xSize)/2, py-MAX_HEIGHT/2+Field.ySize/2, null);
+		g.drawBitmap(frame, px-MAX_WIDTH/2+Field.xSize/2, py-MAX_HEIGHT/2+Field.xSize/2, mPaint);
+
+
 	}
 }

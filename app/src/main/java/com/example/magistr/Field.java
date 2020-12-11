@@ -30,6 +30,7 @@ public class Field {
 				}
 			}
 		}
+		MapLoader.print(map0);
 	}
 
 
