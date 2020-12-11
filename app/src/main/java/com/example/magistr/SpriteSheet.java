@@ -33,12 +33,6 @@ public class SpriteSheet {
 			}
 		}
 		for(int _i=0; _i<sprNumber; _i++) {
-//			Bitmap newImage = Bitmap.createBitmap(MAX_WIDTH, MAX_HEIGHT, Bitmap.Config.ARGB_8888);
-//			Bitmap cropped = Bitmap.createBitmap(source,numbers.get(_i*6+2), numbers.get(_i*6+3), numbers.get(_i*6+4), numbers.get(_i*6+5));
-//			Canvas canvas = new Canvas(newImage);
-//			canvas.drawBitmap(cropped, MAX_WIDTH/2-numbers.get(_i*6), MAX_HEIGHT-numbers.get(_i*6+1),null);
-//			frames.add(newImage);
-			//Bitmap newImage = new BufferedImage(MAX_WIDTH, MAX_HEIGHT, BufferedImage.TYPE_INT_ARGB);
 			Bitmap newImage  = Bitmap.createBitmap(MAX_WIDTH,MAX_HEIGHT, Bitmap.Config.ARGB_8888);
 			Bitmap cropped  = Bitmap.createBitmap(source, numbers.get(_i*6+2), numbers.get(_i*6+3), numbers.get(_i*6+4), numbers.get(_i*6+5));
 			//BufferedImage bi = image.getSubimage(numbers.get(_i*6+2), numbers.get(_i*6+3), numbers.get(_i*6+4), numbers.get(_i*6+5));
@@ -70,6 +64,6 @@ public class SpriteSheet {
 		if(selected) {
 			g.drawOval(px+4, py+4, px+4+Field.xSize-8, py+4+Field.ySize-8, mPaint);
 		}
-		g.drawBitmap(frames.get(0), px-(MAX_WIDTH-Field.xSize)/2, py-MAX_HEIGHT/2+Field.ySize/2, null);
+		g.drawBitmap(frame, px-(MAX_WIDTH-Field.xSize)/2, py-MAX_HEIGHT/2+Field.ySize/2, null);
 	}
 }

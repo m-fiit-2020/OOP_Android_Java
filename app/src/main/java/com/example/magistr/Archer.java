@@ -206,12 +206,15 @@ public class Archer extends Unit {
 			//WaveAlg alg = new WaveAlg();
 			//path = new WaveAlg().findDiagonPath(Field.map0, x, y, tx, ty);
 			target = new Point(tx, ty);
-			selected = false;//времянка
-
+			//selected = false;//времянка
 		}
 	}
-	public void setSelectedState (int qx, int qy) {
-		if(x==qx && y==qy)
-			selected =! selected;
+	public boolean setSelectedState (int qx, int qy) {
+		if(x==qx && y==qy) {
+			selected = !selected;
+			return true;
+		}
+		return false;
 	}
+
 }

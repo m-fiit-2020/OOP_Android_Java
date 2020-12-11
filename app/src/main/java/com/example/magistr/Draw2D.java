@@ -9,9 +9,10 @@ import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.Rect;
+import android.view.MotionEvent;
 import android.view.View;
 
-public class Draw2D extends View {
+public class Draw2D extends View implements Runnable{
 
     private Paint mPaint = new Paint();
     private Rect mRect = new Rect();
@@ -30,6 +31,8 @@ public class Draw2D extends View {
         unitBitmap = BitmapFactory.decodeResource(res, R.drawable.p0);
         field = new Field(map);
         unitCont.refresh();
+        Thread t = new Thread(this);
+        t.start();
     }
 
     @Override
@@ -103,5 +106,22 @@ public class Draw2D extends View {
     public SpriteSheet getSpriteSheet(int id) {
         // TODO Auto-generated method stub
         return spriteSheetProvider.getSpriteSheet(id);
+    }
+
+    public void onTouch(MotionEvent event) {
+        unitCont.onTouch(event);
+    }
+
+    @Override
+    public void run() {
+        while(true){
+            unitCont.refresh();
+            this.postInvalidate();
+            try {
+                Thread.sleep(300);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
     }
 }
