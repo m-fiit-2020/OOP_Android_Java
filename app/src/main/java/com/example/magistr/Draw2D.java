@@ -19,6 +19,9 @@ public class Draw2D extends View {
     private Bitmap unitBitmap;
     Field field = null;
 
+    SpriteSheetProvider spriteSheetProvider = new SpriteSheetProvider(this);
+    UnitCont unitCont = new UnitCont(this);
+
     public Draw2D(Context context, int[][] map) {
         super(context);
         // Выводим значок из ресурсов
@@ -26,6 +29,7 @@ public class Draw2D extends View {
         mBitmap = BitmapFactory.decodeResource(res, R.drawable.cat_bottom);
         unitBitmap = BitmapFactory.decodeResource(res, R.drawable.p0);
         field = new Field(map);
+        unitCont.refresh();
     }
 
     @Override
@@ -69,28 +73,35 @@ public class Draw2D extends View {
         mPaint.setTextSize(27);
         String beam = "Лучик солнца!";
 
-        canvas.save();
         // Создаем ограничивающий прямоугольник для наклонного текста
         // поворачиваем холст по центру текста
         //canvas.rotate(-45, x + mRect.exactCenterX(), y + mRect.exactCenterY());
 
         // Рисуем текст
-        mPaint.setStyle(Paint.Style.FILL);
-        canvas.drawText(beam, x, y, mPaint);
+//        mPaint.setStyle(Paint.Style.FILL);
+//        canvas.drawText(beam, x, y, mPaint);
         field.paint(canvas);
-        //canvas.drawBitmap(unitBitmap, 0, 0, mPaint);
-        Bitmap cropped = Bitmap.createBitmap(unitBitmap,0,0, 170, 150);
-        canvas.drawBitmap(cropped, 0, 0, mPaint);
+//        //canvas.drawBitmap(unitBitmap, 0, 0, mPaint);
+//        Bitmap cropped = Bitmap.createBitmap(unitBitmap,0,0, 170, 150);
+//        canvas.drawBitmap(cropped, 0, 0, mPaint);
+//
+//        Matrix matrix = new Matrix();
+//        matrix.preScale(-1.0f,1.0f);
+//        Bitmap mirrored = Bitmap.createBitmap(cropped,0,0, cropped.getWidth(), cropped.getHeight(), matrix, false);
+//        canvas.drawBitmap(mirrored, 300, 0, mPaint);
 
-        Matrix matrix = new Matrix();
-        matrix.preScale(-1.0f,1.0f);
-        Bitmap mirrored = Bitmap.createBitmap(cropped,0,0, cropped.getWidth(), cropped.getHeight(), matrix, false);
-        canvas.drawBitmap(mirrored, 300, 0, mPaint);
+        unitCont.paint(canvas);
         // восстанавливаем холст
         //canvas.restore();
 
         // Выводим изображение
         // canvas.drawBitmap(mBitmap, 450, 530, mPaint);
         canvas.drawBitmap(mBitmap, width - mBitmap.getWidth(), height - mBitmap.getHeight() - 10, mPaint);
+        canvas.save();
+
+    }
+    public SpriteSheet getSpriteSheet(int id) {
+        // TODO Auto-generated method stub
+        return spriteSheetProvider.getSpriteSheet(id);
     }
 }
