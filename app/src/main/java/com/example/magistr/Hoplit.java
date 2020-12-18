@@ -70,87 +70,92 @@ public class Hoplit extends Unit {
 	}
 
 	public void tick() {
+		renderTick();
+
+	}
+	public void renderTick(){
 		if(target!=null && ! isInterMediate) {
 			path = new WaveAlg().findDiagonPath(Field.map0, x, y, target.x, target.y);
 			target = null;
 		}
-		
-	if(! isInterMediate) {
-		if(path.size()>1) {
-			Point p = path.get(1);
-			int newTrend = trendMap.get((p.x-x)+10*(p.y-y));
-			if(newTrend==trends.get(0)) {
-				if(Field.map0[p.y][p.x]==-1) {
-					//двигается вперед
-					isInterMediate = true;
-				}else {
-					state = 0;
-				}
-			}else {
-				//делаем поворот
-				//int offSet = Math.abs(newTrend-trends.get(0));
-				int offSet = 0;
-				for(int _i=0; _i<trends.size(); _i++) {
-					if(trends.get(_i)==newTrend) {
-						offSet = _i;
-						break;
-					}
-				}
-				Collections.rotate(trends, turnMap.get(offSet));
-				isInterMediate = false;
-			}
-		}else {
-			state=0;
-		}
-	}
-	if(isInterMediate  == true) {
-		state = 1;
-		if(renderPhase==1) {
+
+
+		if(! isInterMediate) {
 			if(path.size()>1) {
 				Point p = path.get(1);
-				if(Field.map0[p.y][p.x]==-1) {
-					path.remove(1);
-					Field.map0[y][x]=-1;
-					x = p.x; y= p.y;
-					Field.map0[y][x]=-2;
-					renderPhase = 2;
-					MapLoader.print(Field.map0);
+				int newTrend = trendMap.get((p.x-x)+10*(p.y-y));
+				if(newTrend==trends.get(0)) {
+					if(Field.map0[p.y][p.x]==-1) {
+						//двигается вперед
+						isInterMediate = true;
+					}else {
+						state = 0;
+					}
 				}else {
+					//делаем поворот
+					//int offSet = Math.abs(newTrend-trends.get(0));
+					int offSet = 0;
+					for(int _i=0; _i<trends.size(); _i++) {
+						if(trends.get(_i)==newTrend) {
+							offSet = _i;
+							break;
+						}
+					}
+					Collections.rotate(trends, turnMap.get(offSet));
+					isInterMediate = false;
+				}
+			}else {
+				state=0;
+			}
+		}
+		if(isInterMediate  == true) {
+			state = 1;
+			if(renderPhase==1) {
+				if(path.size()>1) {
+					Point p = path.get(1);
+					if(Field.map0[p.y][p.x]==-1) {
+						path.remove(1);
+						Field.map0[y][x]=-1;
+						x = p.x; y= p.y;
+						Field.map0[y][x]=-2;
+						renderPhase = 2;
+						MapLoader.print(Field.map0);
+					}else {
+						state = 0;
+						renderPhase = 3;
+					}
+				}
+			}
+			if(renderPhase==0) {
+				//рисование первой половины пр кадров
+				renderCount++;
+				setOffSet();
+				if(renderCount>=INTER_QUANTITY/2) {
+					renderPhase = 1;
+				}
+			}else if(renderPhase==2) {
+				//рисование второй половины пр кадров
+				renderCount--;
+				setOffSet2();
+				if(renderCount<=0) {
+					renderPhase = 0;
+					isInterMediate = false;
+				}
+			}else if(renderPhase==3) {
+				//рисование второй половины пр кадров
+				renderCount--;
+				setOffSet();
+				if(renderCount<=0) {
+					renderPhase = 0;
 					state = 0;
-					renderPhase = 3;
+					isInterMediate = false;
 				}
 			}
 		}
-		if(renderPhase==0) {
-			//рисование первой половины пр кадров
-			renderCount++;
-			setOffSet();
-			if(renderCount>=INTER_QUANTITY/2) {
-				renderPhase = 1;
-			}
-		}else if(renderPhase==2) {
-			//рисование второй половины пр кадров
-			renderCount--;
-			setOffSet2();
-			if(renderCount<=0) {
-				renderPhase = 0;
-				isInterMediate = false;
-			}
-		}else if(renderPhase==3) {
-			//рисование второй половины пр кадров
-			renderCount--;
-			setOffSet();
-			if(renderCount<=0) {
-				renderPhase = 0;
-				state = 0;
-				isInterMediate = false;
-			}
-		}
-	}
 
 		frame = ss.grabSprite(trends.get(0),pAnimation.getRow(state));
-	}
 
+	}
 	private void setOffSet2() {
 		setOffSet();
 		deltaX = - deltaX;

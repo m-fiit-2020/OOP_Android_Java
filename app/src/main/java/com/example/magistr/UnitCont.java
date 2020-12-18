@@ -46,15 +46,18 @@ public class UnitCont {
 	public void onTouch(MotionEvent e) {
 		int qx = (int)((e.getX()-Field.left)/Field.xSize);
 		int qy = (int)((e.getY()-Field.top)/Field.ySize);
-		boolean isBuzy = false;
+		//boolean isBuzy = false;
+		int countExist = 0;
 		if(e.getAction()==MotionEvent.ACTION_DOWN) {
 			for(Unit u: units) {
-				isBuzy = u.setSelectedState(qx, qy);
+				if(u.setSelectedState(qx, qy)){
+					countExist++;
+				}
 			}
-		}
-		if(isBuzy == false){
-			for(Unit u: units) {
-				u.setTarget(qx, qy);
+			if (countExist==0) {
+				for (Unit u : units) {
+					u.setTarget(qx, qy);
+				}
 			}
 		}
 	}
