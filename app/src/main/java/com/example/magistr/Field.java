@@ -10,8 +10,26 @@ public class Field {
 	public float cellSize;
 	public float top;
 
+<<<<<<< HEAD
 	public Field(int fieldComplexity) {
 		this.fieldComplexity = fieldComplexity;
+=======
+	public Field(int[][] map) {
+		this.map1 = map;
+		for(int _i=0; _i<map0.length;_i++) {
+			for(int _j=0; _j<map0[_i].length; _j++) {
+				map0[_i][_j]=-1;
+			}
+		}
+		for(int _i=0; _i<map1.length;_i++) {
+			for(int _j=0; _j<map1[_i].length; _j++) {
+				if(map1[_i][_j]==1) {
+					map0[_i][_j]=-4;
+				}
+			}
+		}
+		MapLoader.print(map0);
+>>>>>>> b804f493298034498739e3e136f8afdbe7232772
 	}
 
 	public void paint(Canvas g) {
