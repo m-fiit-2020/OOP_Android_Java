@@ -58,9 +58,9 @@ public class MapLoader {
 		for(int _i=0; _i<arr.length; _i++) {
 			int[] tArr = arr[_i];
 			for(int _j=0; _j<tArr.length; _j++) {
-				Log.d("PrintMap: ", String.valueOf(tArr[_j])+",");
+				System.out.print(tArr[_j]+",");
 			}
-			Log.d("PrintMap: ", "");
+			System.out.println();
 		}
 	}
 }

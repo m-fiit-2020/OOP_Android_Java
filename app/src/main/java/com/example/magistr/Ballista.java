@@ -7,40 +7,36 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-
-public class Archer extends Unit {
-    private final int INTER_QUANTITY = 10;
-    private SpriteSheet spriteSheet;
+public class Ballista extends Unit{
+    private SpriteSheet ss;
     private Bitmap frame;
-    private ArcherAnimation pAnimation = new ArcherAnimation();
+    BallistaAnimation animation = new BallistaAnimation();
 
-    private int state = 0;
-    private ArrayList<Integer> trends = new ArrayList<Integer>();
+    private ArrayList<Integer> trends= new ArrayList<>();
+    private int state = 1;
 
-    private ArrayList<Point> path = new ArrayList<Point>();
-    private boolean selected = false;
+    ArrayList<Point> path = new ArrayList<Point>();
     private Point target = null;
+    private boolean selected = false;
 
-    private HashMap<Integer, Integer> trendMap = new HashMap<Integer, Integer>();
-    private HashMap<Integer, Integer> turnMap = new HashMap<Integer, Integer>();
-
+    private HashMap<Integer, Integer> trendMap = new HashMap<>();
+    private HashMap<Integer, Integer> turnMap = new HashMap<>();
+    private static final int INTER_QUANTITY = 10;
+    private boolean isInterMediate = false;
     private int renderPhase = 0;
     private int renderCount = 0;
     private float deltaY;
     private float deltaX;
-    private boolean isInterMediate = false;
 
-    public Archer(int x, int y, Draw2D game) {
-        super.x = x;
-        super.y = y;
+    public Ballista(int x, int y, Draw2D game) {
+        this.x = x;
+        this.y = y;
         Field.map0[y][x]=-2;
-
-        spriteSheet = game.getSpriteSheet(1);
+        ss = game.getSpriteSheet(3);
 
         for(int _i=0; _i<8; _i++) {
             trends.add(_i);
         }
-
         trendMap.put(-10, 0);
         trendMap.put( -9, 1);
         trendMap.put(  1, 2);
@@ -58,94 +54,89 @@ public class Archer extends Unit {
         turnMap.put(6, 2);//налево
         turnMap.put(7, 1);//налево полоборота
     }
-
     public void paint(Canvas g) {
-        float px = x*Field.cellSize;
-        float py = Field.top+y*Field.cellSize;
-        spriteSheet.render(g, frame, px+deltaX, py+deltaY, selected);
-
+        float px = Field.cellSize*x;
+        float py = Field.cellSize*y+Field.top;
+        ss.render(g, frame, px+deltaX, py+deltaY, selected);
     }
 
     public void tick() {
+        //battle, building, destroy
+        renderTick();//рисование
+    }
+    public void renderTick() {
         if(target!=null && ! isInterMediate) {
-            path = new WaveAlg().findDiagonPath(Field.map0, x, y, target.x, target.y);
-            target = null;
+            WaveAlg alg = new WaveAlg();
+            path = alg.findDiagonPath(Field.map0, x, y, target.x, target.y);
         }
-
         if(! isInterMediate) {
-            if(path.size()>1) {
+            if(path.size()>1) {//если есть следующая клетка для передвижения
+                state=1;
                 Point p = path.get(1);
-                int newTrend = trendMap.get((p.x-x)+10*(p.y-y));
-                if(newTrend==trends.get(0)) {
-                    if(Field.map0[p.y][p.x]==-1) {
-                        //двигается вперед
+                int newTrend  = trendMap.get((p.x-x)+10*(p.y-y));
+                if(newTrend==trends.get(0)) {//если текущее направление юнита совпадает с направлением следующей клетки
+                    if(Field.map0[p.y][p.x]==-1) {//если клетка свободна
                         isInterMediate = true;
                     }else {
                         state = 0;
                     }
-                }else {
-                    //делаем поворот
-                    //int offSet = Math.abs(newTrend-trends.get(0));
-                    int offSet = 0;
+                }else{
+                    int offSet = 0;//на сколько надо повернуть
                     for(int _i=0; _i<trends.size(); _i++) {
                         if(trends.get(_i)==newTrend) {
                             offSet = _i;
                             break;
                         }
                     }
-                    Collections.rotate(trends, turnMap.get(offSet));
+                    Collections.rotate(trends, turnMap.get(offSet));//поворачиваем
                     isInterMediate = false;
                 }
             }else {
                 state=0;
             }
         }
-        if(isInterMediate  == true) {
-            state = 1;
-            if(renderPhase==1) {
+
+        if(isInterMediate) {
+            if(renderPhase==5) {
                 if(path.size()>1) {
                     Point p = path.get(1);
                     if(Field.map0[p.y][p.x]==-1) {
-                        path.remove(1);
                         Field.map0[y][x]=-1;
-                        x = p.x; y= p.y;
+                        x = p.x;
+                        y = p.y;
                         Field.map0[y][x]=-2;
-                        renderPhase = 2;
-                        MapLoader.print(Field.map0);
+                        path.remove(1);
+                        renderPhase=1;
+                        //MapLoader.print(Field.map0);
                     }else {
-                        state = 0;
-                        renderPhase = 3;
+                        renderPhase = 2;
                     }
                 }
             }
             if(renderPhase==0) {
-                //рисование первой половины пр кадров
                 renderCount++;
                 setOffSet();
                 if(renderCount>=INTER_QUANTITY/2) {
-                    renderPhase = 1;
+                    renderPhase=5;
                 }
-            }else if(renderPhase==2) {
-                //рисование второй половины пр кадров
+            }else if(renderPhase==1) {
                 renderCount--;
                 setOffSet2();
                 if(renderCount<=0) {
-                    renderPhase = 0;
+                    renderPhase=0;
                     isInterMediate = false;
                 }
-            }else if(renderPhase==3) {
-                //рисование второй половины пр кадров
+            }else if(renderPhase==2) {
                 renderCount--;
                 setOffSet();
                 if(renderCount<=0) {
-                    renderPhase = 0;
+                    renderPhase=0;
                     state = 0;
                     isInterMediate = false;
                 }
             }
         }
-
-        frame = spriteSheet.grabSprite(trends.get(0),pAnimation.getRow(state));
+        frame = ss.grabSprite(trends.get(0),animation.getRow(state));
     }
 
     private void setOffSet2() {
@@ -153,11 +144,10 @@ public class Archer extends Unit {
         deltaX = - deltaX;
         deltaY = - deltaY;
     }
-
     private void setOffSet() {
         switch(trends.get(0)) {
             case 0:
-                deltaY = -renderCount*Field.cellSize/INTER_QUANTITY ;
+                deltaY = -renderCount*Field.cellSize/INTER_QUANTITY;
                 break;
             case 1:
                 deltaX = +renderCount*Field.cellSize/INTER_QUANTITY;
@@ -186,29 +176,28 @@ public class Archer extends Unit {
                 break;
         }
     }
+    public void setTarget(int cx, int cy) {
+        if(selected){
 
-
-
-    public void setTrend(int trend) {
-        Collections.rotate(trends, -trend);
-    }
-
-    public void setState(int state) {
-        this.state = state;
-    }
-    public void setTarget(int tx, int ty) {
-        if(selected) {
-            //WaveAlg alg = new WaveAlg();
-            //path = new WaveAlg().findDiagonPath(Field.map0, x, y, tx, ty);
-            target = new Point(tx, ty);
-            //selected = false;//времянка
+            target = new Point(cx, cy);
+            selected = !selected;
         }
     }
-    public boolean setSelectedState (int qx, int qy) {
-        if(x==qx && y==qy) {
+
+    public boolean setSelectedState(int cx, int cy) {
+        if(x==cx && y==cy) {
             selected = !selected;
             return true;
         }
         return false;
     }
+
+    public void setTrend(int trend) {
+        Collections.rotate(trends, trend);
+    }
+
+    public void setState(int state) {
+        this.state = state;
+    }
 }
+

@@ -7,12 +7,11 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 
-
-public class Archer extends Unit {
+public class Hoplit extends Unit {
     private final int INTER_QUANTITY = 10;
-    private SpriteSheet spriteSheet;
+    private SpriteSheet ss;
     private Bitmap frame;
-    private ArcherAnimation pAnimation = new ArcherAnimation();
+    private HoplitAnimation pAnimation = new HoplitAnimation();
 
     private int state = 0;
     private ArrayList<Integer> trends = new ArrayList<Integer>();
@@ -30,12 +29,12 @@ public class Archer extends Unit {
     private float deltaX;
     private boolean isInterMediate = false;
 
-    public Archer(int x, int y, Draw2D game) {
-        super.x = x;
-        super.y = y;
+    public Hoplit(int x, int y, Draw2D game) {
+        this.x = x;
+        this.y = y;
         Field.map0[y][x]=-2;
 
-        spriteSheet = game.getSpriteSheet(1);
+        ss = game.getSpriteSheet(4);
 
         for(int _i=0; _i<8; _i++) {
             trends.add(_i);
@@ -62,8 +61,9 @@ public class Archer extends Unit {
     public void paint(Canvas g) {
         float px = x*Field.cellSize;
         float py = Field.top+y*Field.cellSize;
-        spriteSheet.render(g, frame, px+deltaX, py+deltaY, selected);
-
+        if (g == null || frame == null)
+            return;
+        ss.render(g, frame, px+deltaX, py+deltaY, selected);
     }
 
     public void tick() {
@@ -145,7 +145,7 @@ public class Archer extends Unit {
             }
         }
 
-        frame = spriteSheet.grabSprite(trends.get(0),pAnimation.getRow(state));
+        frame = ss.grabSprite(trends.get(0),pAnimation.getRow(state));
     }
 
     private void setOffSet2() {
